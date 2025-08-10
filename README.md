@@ -1,275 +1,134 @@
-# LLM League Leaderboard
+# LLM League Leaderboard Account
 
-A comprehensive platform for training, evaluating, and ranking Large Language Models (LLMs) using AWS services. The application consists of two main components: a **Participant Account** for model training and submission, and a **Leaderboard Account** for evaluation and ranking.
+The **Leaderboard Account** component of the LLM League platform, responsible for evaluating, ranking, and displaying Large Language Model (LLM) performance using AWS Bedrock as an impartial judge.
 
 ## Architecture Overview
 
 ![LLM League Architecture](./generated-diagrams/LLMLeagueArchitecture_Updated.png)
 
-The application uses a multi-account architecture to ensure security, isolation, and fair evaluation:
+The leaderboard account operates as part of a multi-account architecture that ensures fair and secure evaluation of participant models. This account focuses on:
 
-- **Participant Account**: Where users train their custom LLMs using SageMaker JumpStart and submit models for evaluation
-- **Leaderboard Account**: Where models are evaluated and ranked using Bedrock as an impartial judge, with results displayed on a public leaderboard
+- **Model Evaluation**: Using Amazon Bedrock as an impartial AI judge
+- **Ranking Management**: Processing and storing leaderboard rankings via Lambda functions
+- **Public Display**: Serving leaderboard results through a web interface
+- **Cross-Account Security**: Secure integration with participant accounts
 
-### Key Architecture Components
+## Leaderboard Account Components
 
-#### Participant Account
-- **Web Frontend**: CloudFront CDN serving the participant web application
-- **Authentication**: Cognito for secure user authentication
-- **API Layer**: API Gateway endpoints for web and inference operations
-- **ML Training**: SageMaker Unified Studio and JumpStart models for fine-tuning
-- **Data Management**: S3 buckets for training data, testing data, and model results
-- **Lambda Functions**: Serverless processing for data submission, validation, and inference
+### Web Frontend
+- **CloudFront CDN**: Global content delivery for the public leaderboard interface
+- **S3 Static Hosting**: React-based web application for displaying rankings and statistics
 
-#### Leaderboard Account
-- **Web Frontend**: CloudFront CDN serving the public leaderboard
-- **API Layer**: API Gateway endpoints for leaderboard data and judge operations
-- **Leaderboard API Lambda**: Central component for managing leaderboard data and rankings
-- **Evaluation System**: Judge Orchestrator Lambda coordinating with Bedrock LLM Judge
-- **Data Storage**: S3 buckets for leaderboard results and judge questions
+### API Layer
+- **Web API (API Gateway)**: Serves leaderboard data to the frontend application
+- **Judge API (API Gateway)**: Receives evaluation requests from participant accounts
+- **Leaderboard API (Lambda)**: Central component managing all leaderboard operations, rankings, and data storage
 
-#### LLM Judge & Ranking System
-- **Judge Orchestrator**: Lambda function managing the evaluation workflow
-- **Bedrock LLM Judge**: AI-powered impartial evaluation using Amazon Bedrock
-- **Judge Questions**: S3 storage for evaluation criteria and prompts
+### LLM Judge & Ranking System
+- **Judge Orchestrator (Lambda)**: Coordinates the evaluation workflow and manages judge interactions
+- **Amazon Bedrock**: AI-powered impartial judge for model evaluation using state-of-the-art LLMs
+- **Judge Questions (S3)**: Configurable evaluation criteria, prompts, and scoring rubrics
 
-## Recent Updates
+### Data Storage
+- **Leaderboard Results (S3)**: Current rankings, historical data, and detailed evaluation results
 
-### Architecture Improvements (August 2025)
-- **Replaced DynamoDB with Leaderboard API Lambda**: Simplified data management by centralizing leaderboard operations in a dedicated Lambda function
-- **Enhanced API Architecture**: The Leaderboard API Lambda now serves as the central hub for all leaderboard data operations
-- **Improved Scalability**: Lambda-based approach provides better scalability and cost optimization
-- **Streamlined Data Flow**: Direct integration between Judge Orchestrator and Leaderboard API Lambda for faster ranking updates
+## Recent Architecture Updates
 
-## Table of Contents
+### Lambda-Based Data Management (August 2025)
+- **Replaced DynamoDB with Leaderboard API Lambda**: Simplified architecture by centralizing all leaderboard operations in a dedicated Lambda function
+- **Enhanced Scalability**: Serverless approach provides better cost optimization and automatic scaling
+- **Streamlined Data Flow**: Direct integration between Judge Orchestrator and Leaderboard API Lambda for faster updates
+- **Improved API Design**: Single Lambda function handles all leaderboard operations (GET, POST, rankings, statistics)
 
-- [Participant Account](#participant-account)
-  - [Features](#participant-features)
-  - [Architecture](#participant-architecture)
-  - [Setup](#participant-setup)
-  - [Usage](#participant-usage)
-- [Leaderboard Account](#leaderboard-account)
-  - [Features](#leaderboard-features)
-  - [Architecture](#leaderboard-architecture)
-  - [Setup](#leaderboard-setup)
-  - [Usage](#leaderboard-usage)
-- [Cross-Account Integration](#cross-account-integration)
-- [Security](#security)
-- [Deployment](#deployment)
+## Features
 
----
+### 🏆 **Automated Model Evaluation**
+- Fair evaluation using Amazon Bedrock as an impartial judge
+- Configurable evaluation criteria and scoring rubrics
+- Support for multiple evaluation dimensions (accuracy, coherence, relevance)
+- Automated ranking calculation and updates
 
-## Participant Account
+### 📊 **Real-Time Leaderboard**
+- Live rankings with automatic updates
+- Detailed performance metrics and score breakdowns
+- Historical performance tracking
+- Interactive charts and statistics
 
-### Participant Features
+### 🔒 **Secure Cross-Account Integration**
+- Presigned URL access for participant model results
+- IAM-based cross-account permissions with least privilege
+- Audit logging for all evaluation activities
+- Secure API endpoints with authentication
 
-- **Self-Service Model Training**: Train custom LLMs using SageMaker JumpStart foundation models
-- **Data Management**: Upload and validate training and testing data
-- **Model Inference**: Deploy and test trained models via API endpoints
-- **Evaluation Submission**: Submit model results for leaderboard evaluation
-- **Web Interface**: User-friendly interface for all training activities
+### ⚡ **Serverless Architecture**
+- Cost-effective Lambda-based processing
+- Automatic scaling based on demand
+- High availability with multi-AZ deployment
+- CloudWatch monitoring and alerting
 
-### Participant Architecture
+## Quick Start
 
-#### Core Components
-
-**Web Frontend**
-- **CloudFront CDN**: Global content delivery for the participant web application
-- **S3 WebApp Assets**: Static files (HTML, CSS, JavaScript) for the training interface
-
-**Authentication**
-- **Cognito**: User authentication and session management
-
-**API Layer**
-- **Web API (API Gateway)**: Routes web interface requests
-- **Inference API (API Gateway)**: Handles model inference requests
-- **Testing Data Submission (Lambda)**: Processes testing data uploads
-- **Testing Data Validator (Lambda)**: Validates testing data format and quality
-- **Inference Handler (Lambda)**: Manages model inference and result generation
-
-**ML Training & Inference**
-- **SageMaker Unified Studio**: Interactive environment for model development
-- **JumpStart Models**: Pre-trained foundation models (LLaMA, Claude, etc.)
-- **Fine-Tuning Job**: Custom training jobs using participant data
-- **Custom LLM Endpoint**: Deployed fine-tuned model for inference
-- **Training Data S3**: Storage for training datasets (JSONL format)
-
-**Testing Data Management**
-- **Testing Data S3**: Raw testing data uploads
-- **Validated Testing Data S3**: Processed and validated testing data
-
-**Model Results**
-- **Model Results S3**: Storage for inference results with presigned URL generation
-
-### Participant Setup
-
-#### Prerequisites
+### Prerequisites
 - AWS Account with appropriate permissions
-- SageMaker Unified Studio access
-- Basic understanding of machine learning concepts
+- Amazon Bedrock access enabled
+- AWS CLI configured
+- Node.js 18+ and npm installed
+- AWS CDK v2 installed
 
-#### Deployment Steps
-
-1. **Deploy Infrastructure**
-   ```bash
-   # Deploy participant account resources
-   aws cloudformation deploy \
-     --template-file participant-infrastructure.yaml \
-     --stack-name llm-leaderboard-participant \
-     --capabilities CAPABILITY_IAM
-   ```
-
-2. **Configure Authentication**
-   ```bash
-   # Set up Cognito user pool and identity pool
-   aws cognito-idp create-user-pool \
-     --pool-name llm-leaderboard-participants
-   ```
-
-3. **Deploy Web Application**
-   ```bash
-   # Build and deploy frontend
-   npm run build
-   aws s3 sync dist/ s3://participant-webapp-bucket/
-   aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
-   ```
-
-### Participant Usage
-
-#### 1. Model Training Workflow
-
-**Step 1: Access SageMaker Unified Studio**
-- Navigate to SageMaker Unified Studio in your AWS console
-- Create a new project for your LLM training
-
-**Step 2: Upload Training Data**
-- Upload your training data directly through Unified Studio
-- Ensure data is in JSONL format
-- Data is automatically stored in the Training Data S3 bucket
-
-**Step 3: Select Foundation Model**
-- Choose from available JumpStart models (LLaMA 2, Claude, etc.)
-- Configure model parameters and training settings
-
-**Step 4: Fine-Tune Model**
-- Start the fine-tuning job with your training data
-- Monitor training progress through Unified Studio
-- Model automatically deploys to Custom LLM Endpoint upon completion
-
-#### 2. Testing Data Management
-
-**Upload Testing Data**
+### 1. Clone and Setup
 ```bash
-# Via web interface or API
-curl -X POST https://your-web-api.amazonaws.com/testing-data \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -F "file=@testing_data.jsonl"
+git clone https://github.com/hcwongleo/llm-league-leaderboard.git
+cd llm-league-leaderboard/leaderboard-account
+npm install
 ```
 
-**Validate Testing Data**
-- Testing data is automatically validated for format and structure
-- Validation results available through web interface
-- Only validated data can be used for evaluation
-
-#### 3. Model Inference and Evaluation
-
-**Run Inference**
+### 2. Configure Environment
 ```bash
-# Direct API call to your model
-curl -X POST https://your-inference-api.amazonaws.com/inference \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "Your test prompt here"}'
+# Copy environment template
+cp .env.example .env
+
+# Edit configuration
+export BEDROCK_MODEL_ID="anthropic.claude-3-sonnet-20240229-v1:0"
+export JUDGE_QUESTIONS_BUCKET="your-judge-questions-bucket"
+export LEADERBOARD_RESULTS_BUCKET="your-leaderboard-results-bucket"
 ```
 
-**Submit for Evaluation**
-- Inference results automatically stored in Model Results S3
-- Presigned URL generated for secure access
-- Evaluation automatically triggered in leaderboard account
+### 3. Deploy Infrastructure
+```bash
+# Deploy CDK stack
+npm run deploy
 
----
+# Or use the deployment script
+./deploy.sh
+```
 
-## Leaderboard Account
+### 4. Upload Judge Questions
+```bash
+# Upload evaluation criteria
+aws s3 cp judge-questions/judge-questions.json s3://your-judge-questions-bucket/
+```
 
-### Leaderboard Features
+### 5. Deploy Frontend
+```bash
+cd frontend
+npm install
+npm run build
 
-- **Model Evaluation**: Fair evaluation using Bedrock LLM as judge
-- **Ranking System**: Automated ranking based on model performance
-- **Public Leaderboard**: Web interface displaying current rankings
-- **Judge Questions Management**: Configurable evaluation criteria
-- **Cross-Account Security**: Secure access to participant results
+# Deploy to S3 and invalidate CloudFront
+aws s3 sync dist/ s3://your-frontend-bucket/
+aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
+```
 
-### Leaderboard Architecture
+## Configuration
 
-#### Core Components
-
-**Web Frontend**
-- **CloudFront CDN**: Global content delivery for leaderboard display
-- **S3 Leaderboard Assets**: Static files for leaderboard web interface
-
-**API Layer**
-- **Web API (API Gateway)**: Serves leaderboard data to frontend
-- **Judge API (API Gateway)**: Receives evaluation requests from participants
-- **Leaderboard API (Lambda)**: Central component managing leaderboard data, rankings, and API responses
-
-**LLM Judge & Ranking System**
-- **Judge Orchestrator (Lambda)**: Coordinates evaluation process
-- **Bedrock LLM Judge**: Impartial AI judge for model evaluation
-- **LLM Judge Questions S3**: Evaluation criteria and prompts
-
-**Data Storage**
-- **Leaderboard Results S3**: Current leaderboard rankings, scores, and historical data
-
-### Leaderboard Setup
-
-#### Prerequisites
-- AWS Account with Bedrock access
-- Appropriate IAM permissions for cross-account access
-- Judge evaluation criteria prepared
-
-#### Deployment Steps
-
-1. **Deploy Infrastructure**
-   ```bash
-   # Deploy leaderboard account resources
-   aws cloudformation deploy \
-     --template-file leaderboard-infrastructure.yaml \
-     --stack-name llm-leaderboard-main \
-     --capabilities CAPABILITY_IAM
-   ```
-
-2. **Configure Bedrock Access**
-   ```bash
-   # Enable Bedrock model access
-   aws bedrock put-model-invocation-logging-configuration \
-     --logging-config destinationConfig='{cloudWatchConfig={logGroupName=bedrock-judge-logs,roleArn=arn:aws:iam::ACCOUNT:role/BedrockLoggingRole}}'
-   ```
-
-3. **Upload Judge Questions**
-   ```bash
-   # Upload evaluation criteria
-   aws s3 cp judge-questions.json s3://llm-judge-questions-bucket/
-   ```
-
-4. **Deploy Web Application**
-   ```bash
-   # Build and deploy leaderboard frontend
-   npm run build
-   aws s3 sync dist/ s3://leaderboard-webapp-bucket/
-   aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
-   ```
-
-### Leaderboard Usage
-
-#### 1. Judge Questions Management
-
-**Upload Evaluation Criteria**
+### Judge Questions Format
 ```json
 {
   "evaluation_criteria": [
     {
       "category": "accuracy",
       "weight": 0.4,
+      "description": "Factual correctness and precision",
       "questions": [
         "How accurate is the model's response?",
         "Does the response contain factual errors?"
@@ -278,6 +137,7 @@ curl -X POST https://your-inference-api.amazonaws.com/inference \
     {
       "category": "coherence",
       "weight": 0.3,
+      "description": "Logical structure and flow",
       "questions": [
         "Is the response logically structured?",
         "Does the response flow naturally?"
@@ -286,171 +146,213 @@ curl -X POST https://your-inference-api.amazonaws.com/inference \
     {
       "category": "relevance",
       "weight": 0.3,
+      "description": "Relevance to the prompt",
       "questions": [
         "How relevant is the response to the prompt?",
         "Does the response address all aspects of the question?"
       ]
     }
-  ]
+  ],
+  "scoring": {
+    "scale": "1-10",
+    "description": "1 = Poor, 5 = Average, 10 = Excellent"
+  }
 }
 ```
 
-#### 2. Evaluation Process
-
-**Automatic Evaluation Flow**
-1. Participant submits model results via presigned URL
-2. Judge Orchestrator receives evaluation request
-3. Judge retrieves evaluation criteria from S3
-4. Bedrock LLM Judge evaluates results against criteria
-5. Scores calculated and sent to Leaderboard API Lambda
-6. Leaderboard API Lambda updates rankings and stores results in S3
-7. Leaderboard automatically refreshes with new rankings
-
-#### 3. Leaderboard Management
-
-**View Current Rankings**
-- Access leaderboard web interface
-- Rankings updated in real-time
-- Detailed score breakdowns available
-
-**Monitor Evaluation Activity**
+### Environment Variables
 ```bash
-# Check evaluation logs
+# Required
+BEDROCK_MODEL_ID=anthropic.claude-3-sonnet-20240229-v1:0
+JUDGE_QUESTIONS_BUCKET=llm-judge-questions-bucket
+LEADERBOARD_RESULTS_BUCKET=llm-leaderboard-results-bucket
+
+# Optional
+AWS_REGION=us-east-1
+LOG_LEVEL=INFO
+CORS_ORIGINS=https://your-domain.com
+```
+
+## API Reference
+
+### Leaderboard API Endpoints
+
+#### GET /leaderboard
+Get current leaderboard rankings
+```bash
+curl https://your-api-gateway-url/leaderboard
+```
+
+Response:
+```json
+{
+  "rankings": [
+    {
+      "rank": 1,
+      "model_name": "CustomLLM-v1",
+      "participant": "team-alpha",
+      "overall_score": 8.7,
+      "scores": {
+        "accuracy": 9.1,
+        "coherence": 8.5,
+        "relevance": 8.5
+      },
+      "evaluation_date": "2025-08-10T16:00:00Z"
+    }
+  ],
+  "total_participants": 15,
+  "last_updated": "2025-08-10T16:30:00Z"
+}
+```
+
+#### POST /evaluate
+Submit model results for evaluation (called by participant accounts)
+```bash
+curl -X POST https://your-api-gateway-url/evaluate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "participant_id": "team-alpha",
+    "model_name": "CustomLLM-v1",
+    "results_url": "https://presigned-s3-url...",
+    "metadata": {
+      "model_type": "fine-tuned-llama2",
+      "training_data_size": "10k_samples"
+    }
+  }'
+```
+
+#### GET /statistics
+Get leaderboard statistics
+```bash
+curl https://your-api-gateway-url/statistics
+```
+
+## Monitoring and Troubleshooting
+
+### CloudWatch Logs
+```bash
+# Judge Orchestrator logs
 aws logs filter-log-events \
   --log-group-name /aws/lambda/judge-orchestrator \
   --start-time $(date -d '1 hour ago' +%s)000
 
-# Check leaderboard API logs
+# Leaderboard API logs
 aws logs filter-log-events \
   --log-group-name /aws/lambda/leaderboard-api \
   --start-time $(date -d '1 hour ago' +%s)000
 ```
 
----
+### Common Issues
 
-## Cross-Account Integration
+**Bedrock Access Denied**
+```bash
+# Check Bedrock model access
+aws bedrock list-foundation-models --region us-east-1
 
-### Security Model
+# Enable model access if needed
+aws bedrock put-model-invocation-logging-configuration \
+  --logging-config destinationConfig='{cloudWatchConfig={logGroupName=bedrock-logs,roleArn=arn:aws:iam::ACCOUNT:role/BedrockRole}}'
+```
 
-**IAM Cross-Account Roles**
-- Participant accounts assume roles in leaderboard account
-- Least privilege access principles
-- Temporary credentials for all cross-account operations
+**Cross-Account Permission Issues**
+- Verify IAM roles have correct cross-account trust relationships
+- Check presigned URL expiration times
+- Validate S3 bucket policies for cross-account access
 
-**Presigned URL Access**
-- Secure, time-limited access to participant results
-- No permanent cross-account S3 permissions required
-- Automatic expiration for enhanced security
+**Lambda Timeout Issues**
+- Monitor Lambda duration metrics in CloudWatch
+- Increase timeout settings for complex evaluations
+- Consider breaking large evaluations into smaller batches
 
-### Integration Flow
-
-1. **Participant Model Training**: Self-contained in participant account
-2. **Result Submission**: Presigned URL generated by participant
-3. **Cross-Account Trigger**: Participant triggers leaderboard evaluation
-4. **Secure Evaluation**: Leaderboard accesses results via presigned URL
-5. **Ranking Processing**: Judge Orchestrator sends scores to Leaderboard API Lambda
-6. **Data Storage**: Leaderboard API Lambda stores results in S3
-7. **Frontend Update**: Leaderboard web interface displays updated rankings
-
----
+### Performance Metrics
+- **Evaluation Latency**: Average time from submission to ranking update
+- **Judge Response Time**: Bedrock API response times
+- **API Gateway Metrics**: Request count, latency, and error rates
+- **Lambda Metrics**: Duration, memory usage, and error rates
 
 ## Security
 
 ### Data Protection
 - **Encryption at Rest**: All S3 buckets encrypted with AWS KMS
 - **Encryption in Transit**: HTTPS/TLS for all API communications
-- **Access Logging**: Comprehensive audit trails for all operations
-- **Lambda Security**: Function-level IAM roles with least privilege access
+- **Access Logging**: Comprehensive audit trails via CloudTrail
+- **Lambda Security**: Function-level IAM roles with least privilege
 
-### Authentication & Authorization
-- **Cognito Integration**: Secure user authentication
-- **API Gateway Authorization**: Token-based API access
-- **Cross-Account IAM**: Minimal required permissions
+### Cross-Account Security
+- **Presigned URLs**: Time-limited access to participant results
+- **IAM Roles**: Cross-account roles with minimal required permissions
+- **API Authentication**: Token-based authentication for all endpoints
+- **Network Security**: CloudFront WAF protection and DDoS mitigation
 
-### Network Security
-- **CloudFront**: DDoS protection and edge security
-- **API Gateway**: Rate limiting and request validation
-- **VPC Endpoints**: Private connectivity where applicable
+## Development
 
----
-
-## Deployment
-
-### Prerequisites
-- AWS CLI configured with appropriate permissions
-- Node.js and npm for frontend builds
-- Python 3.9+ for Lambda functions
-- AWS CDK (optional, for infrastructure as code)
-
-### Quick Start
-
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/your-org/llm-leaderboard.git
-   cd llm-leaderboard
-   ```
-
-2. **Deploy Participant Account**
-   ```bash
-   cd participant-account
-   ./deploy.sh
-   ```
-
-3. **Deploy Leaderboard Account**
-   ```bash
-   cd ../leaderboard-account
-   ./deploy.sh
-   ```
-
-4. **Configure Cross-Account Access**
-   ```bash
-   cd ../scripts
-   ./setup-cross-account.sh
-   ```
-
-### Environment Variables
-
-**Participant Account**
+### Local Development
 ```bash
-export PARTICIPANT_ACCOUNT_ID=123456789012
-export LEADERBOARD_ACCOUNT_ID=210987654321
-export COGNITO_USER_POOL_ID=us-east-1_XXXXXXXXX
-export SAGEMAKER_EXECUTION_ROLE_ARN=arn:aws:iam::123456789012:role/SageMakerExecutionRole
+# Install dependencies
+npm install
+
+# Run tests
+npm test
+
+# Local Lambda testing
+sam local start-api
+
+# Frontend development
+cd frontend
+npm run dev
 ```
 
-**Leaderboard Account**
+### Testing
 ```bash
-export LEADERBOARD_ACCOUNT_ID=210987654321
-export BEDROCK_MODEL_ID=anthropic.claude-3-sonnet-20240229-v1:0
-export JUDGE_QUESTIONS_BUCKET=llm-judge-questions-bucket
+# Run unit tests
+npm test
+
+# Integration tests with mock data
+cd test
+./test.sh
+
+# Load testing
+npm run load-test
 ```
-
-### Monitoring and Troubleshooting
-
-**CloudWatch Dashboards**
-- Participant account: Model training and inference metrics
-- Leaderboard account: Evaluation and ranking metrics
-
-**Common Issues**
-- Cross-account permission errors: Check IAM roles and policies
-- Presigned URL expiration: Verify URL generation and timing
-- Model endpoint failures: Check SageMaker endpoint status
 
 ### Contributing
-
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### License
+## Cost Optimization
+
+### Estimated Monthly Costs (for moderate usage)
+- **Lambda Functions**: $5-20 (based on evaluation frequency)
+- **API Gateway**: $3-10 (per million requests)
+- **S3 Storage**: $1-5 (for results and static assets)
+- **CloudFront**: $1-10 (based on traffic)
+- **Bedrock**: $10-50 (based on evaluation volume)
+
+### Cost Optimization Tips
+- Use S3 Intelligent Tiering for long-term result storage
+- Configure CloudFront caching for static assets
+- Monitor Lambda memory allocation for optimal performance/cost ratio
+- Use Bedrock batch processing for multiple evaluations
+
+## Support
+
+### Documentation
+- [AWS Bedrock Documentation](https://docs.aws.amazon.com/bedrock/)
+- [AWS Lambda Best Practices](https://docs.aws.amazon.com/lambda/latest/dg/best-practices.html)
+- [API Gateway Documentation](https://docs.aws.amazon.com/apigateway/)
+
+### Getting Help
+- **Issues**: Create an issue in this GitHub repository
+- **Discussions**: Use GitHub Discussions for questions and ideas
+- **AWS Support**: For AWS service-specific issues
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Support
+---
 
-For questions and support:
-- Create an issue in the GitHub repository
-- Contact the development team at [email]
-- Check the documentation wiki for detailed guides
+**Built with ❤️ using AWS Serverless Technologies**
