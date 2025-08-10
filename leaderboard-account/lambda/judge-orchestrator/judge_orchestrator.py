@@ -58,10 +58,10 @@ def handler(event, context):
                 })
             }
         
-        # Load judge questions
-        logger.info("Loading judge questions...")
-        judge_questions = load_judge_questions()
-        logger.info("Judge questions loaded successfully")
+        # Load judge criteria
+        logger.info("Loading judge criteria...")
+        judge_criteria = load_judge_criteria()
+        logger.info("Judge criteria loaded successfully")
         
         # TODO: improve it to use cross-account S3 CopyObject
         # Copy participant results to our S3 bucket
@@ -73,7 +73,7 @@ def handler(event, context):
         logger.info("Starting Bedrock evaluation...")
         evaluation_scores = evaluate_with_bedrock_judge(
             participant_results_s3_uri, 
-            judge_questions,
+            judge_criteria,
             participant_id
         )
         logger.info("Bedrock evaluation completed")
@@ -113,18 +113,18 @@ def handler(event, context):
             })
         }
 
-def load_judge_questions() -> Dict[str, Any]:
-    """Load judge questions and evaluation criteria from S3"""
+def load_judge_criteria() -> Dict[str, Any]:
+    """Load judge criteria and evaluation guidelines from S3"""
     try:
         response = s3_client.get_object(
             Bucket=JUDGE_CRITERIA_BUCKET,
             Key='judge-criteria.json'
         )
         questions_data = json.loads(response['Body'].read().decode('utf-8'))
-        logger.info("Successfully loaded judge questions")
+        logger.info("Successfully loaded judge criteria")
         return questions_data
     except Exception as e:
-        logger.error(f"Error loading judge questions: {str(e)}")
+        logger.error(f"Error loading judge criteria: {str(e)}")
         raise
 
 def retrieve_participant_results(presigned_url: str, participant_id: str) -> str:
@@ -186,7 +186,7 @@ def retrieve_participant_results(presigned_url: str, participant_id: str) -> str
 
 def evaluate_with_bedrock_judge(
     participant_results_s3_uri: str, 
-    judge_questions: Dict[str, Any],
+    judge_criteria: Dict[str, Any],
     participant_id: str
 ) -> Dict[str, Any]:
     """Evaluate participant results using Bedrock LLM Judge"""
