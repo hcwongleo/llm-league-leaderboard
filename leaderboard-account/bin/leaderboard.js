@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("source-map-support/register");
+const cdk = require("aws-cdk-lib");
+const leaderboard_stack_1 = require("../lib/leaderboard-stack");
+const app = new cdk.App();
+const env = {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION || 'us-east-1',
+};
+new leaderboard_stack_1.LeaderboardStack(app, 'LLMLeaderboardStack', {
+    env,
+    description: 'LLM Leaderboard Account Infrastructure',
+    tags: {
+        Project: 'LLM-Leaderboard',
+        Environment: process.env.ENVIRONMENT || 'dev',
+    },
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibGVhZGVyYm9hcmQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJsZWFkZXJib2FyZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFDQSx1Q0FBcUM7QUFDckMsbUNBQW1DO0FBQ25DLGdFQUE0RDtBQUU1RCxNQUFNLEdBQUcsR0FBRyxJQUFJLEdBQUcsQ0FBQyxHQUFHLEVBQUUsQ0FBQztBQUUxQixNQUFNLEdBQUcsR0FBRztJQUNWLE9BQU8sRUFBRSxPQUFPLENBQUMsR0FBRyxDQUFDLG1CQUFtQjtJQUN4QyxNQUFNLEVBQUUsT0FBTyxDQUFDLEdBQUcsQ0FBQyxrQkFBa0IsSUFBSSxXQUFXO0NBQ3RELENBQUM7QUFFRixJQUFJLG9DQUFnQixDQUFDLEdBQUcsRUFBRSxxQkFBcUIsRUFBRTtJQUMvQyxHQUFHO0lBQ0gsV0FBVyxFQUFFLHdDQUF3QztJQUNyRCxJQUFJLEVBQUU7UUFDSixPQUFPLEVBQUUsaUJBQWlCO1FBQzFCLFdBQVcsRUFBRSxPQUFPLENBQUMsR0FBRyxDQUFDLFdBQVcsSUFBSSxLQUFLO0tBQzlDO0NBQ0YsQ0FBQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiIyEvdXNyL2Jpbi9lbnYgbm9kZVxuaW1wb3J0ICdzb3VyY2UtbWFwLXN1cHBvcnQvcmVnaXN0ZXInO1xuaW1wb3J0ICogYXMgY2RrIGZyb20gJ2F3cy1jZGstbGliJztcbmltcG9ydCB7IExlYWRlcmJvYXJkU3RhY2sgfSBmcm9tICcuLi9saWIvbGVhZGVyYm9hcmQtc3RhY2snO1xuXG5jb25zdCBhcHAgPSBuZXcgY2RrLkFwcCgpO1xuXG5jb25zdCBlbnYgPSB7XG4gIGFjY291bnQ6IHByb2Nlc3MuZW52LkNES19ERUZBVUxUX0FDQ09VTlQsXG4gIHJlZ2lvbjogcHJvY2Vzcy5lbnYuQ0RLX0RFRkFVTFRfUkVHSU9OIHx8ICd1cy1lYXN0LTEnLFxufTtcblxubmV3IExlYWRlcmJvYXJkU3RhY2soYXBwLCAnTExNTGVhZGVyYm9hcmRTdGFjaycsIHtcbiAgZW52LFxuICBkZXNjcmlwdGlvbjogJ0xMTSBMZWFkZXJib2FyZCBBY2NvdW50IEluZnJhc3RydWN0dXJlJyxcbiAgdGFnczoge1xuICAgIFByb2plY3Q6ICdMTE0tTGVhZGVyYm9hcmQnLFxuICAgIEVudmlyb25tZW50OiBwcm9jZXNzLmVudi5FTlZJUk9OTUVOVCB8fCAnZGV2JyxcbiAgfSxcbn0pOyJdfQ==
