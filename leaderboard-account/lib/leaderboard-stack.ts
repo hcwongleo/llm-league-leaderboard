@@ -22,8 +22,8 @@ export class LeaderboardStack extends cdk.Stack {
       autoDeleteObjects: true,
     });
 
-    const judgeQuestionsBucket = new s3.Bucket(this, 'JudgeQuestionsBucket', {
-      bucketName: `llm-judge-questions-${this.account}-${this.region}`,
+    const judgeQuestionsBucket = new s3.Bucket(this, 'JudgeCriteriaBucket', {
+      bucketName: `llm-judge-criteria-${this.account}-${this.region}`,
       versioned: true,
       encryption: s3.BucketEncryption.S3_MANAGED,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -170,7 +170,7 @@ export class LeaderboardStack extends cdk.Stack {
       memorySize: 1024,
       role: lambdaExecutionRole,
       environment: {
-        JUDGE_QUESTIONS_BUCKET: judgeQuestionsBucket.bucketName,
+        JUDGE_CRITERIA_BUCKET: judgeQuestionsBucket.bucketName,
         PARTICIPANT_RESULTS_BUCKET: participantResultsBucket.bucketName,
         BEDROCK_MODEL_ID: 'anthropic.claude-3-sonnet-20240229-v1:0',
         BEDROCK_EVALUATION_ROLE_ARN: bedrockEvaluationRole.roleArn,
@@ -293,9 +293,9 @@ export class LeaderboardStack extends cdk.Stack {
       distributionPaths: ['/*'],
     });
 
-    // Deploy judge questions
-    new s3deploy.BucketDeployment(this, 'DeployJudgeQuestions', {
-      sources: [s3deploy.Source.asset('./judge-questions')],
+    // Deploy judge criteria
+    new s3deploy.BucketDeployment(this, 'DeployJudgeCriteria', {
+      sources: [s3deploy.Source.asset('./judge-criteria')],
       destinationBucket: judgeQuestionsBucket,
     });
 

@@ -83,7 +83,7 @@ npm run deploy
 ```bash
 # Judge criteria are automatically deployed by CDK
 # But you can also upload manually if needed:
-aws s3 cp judge-questions/judge-questions.json s3://llm-judge-questions-${AWS_ACCOUNT_ID}-${AWS_REGION}/
+aws s3 cp judge-criteria/judge-criteria.json s3://llm-judge-criteria-${AWS_ACCOUNT_ID}-${AWS_REGION}/
 ```
 
 ### 4. Deploy Frontend

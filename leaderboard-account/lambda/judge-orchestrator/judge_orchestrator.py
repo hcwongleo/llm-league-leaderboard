@@ -16,7 +16,7 @@ s3_client = boto3.client('s3')
 bedrock_client = boto3.client('bedrock')
 
 # Environment variables
-JUDGE_QUESTIONS_BUCKET = os.environ['JUDGE_QUESTIONS_BUCKET']
+JUDGE_CRITERIA_BUCKET = os.environ['JUDGE_CRITERIA_BUCKET']
 BEDROCK_MODEL_ID = os.environ['BEDROCK_MODEL_ID']
 PARTICIPANT_RESULTS_BUCKET = os.environ['PARTICIPANT_RESULTS_BUCKET']
 BEDROCK_EVALUATION_ROLE_ARN = os.environ['BEDROCK_EVALUATION_ROLE_ARN']
@@ -117,8 +117,8 @@ def load_judge_questions() -> Dict[str, Any]:
     """Load judge questions and evaluation criteria from S3"""
     try:
         response = s3_client.get_object(
-            Bucket=JUDGE_QUESTIONS_BUCKET,
-            Key='judge-questions.json'
+            Bucket=JUDGE_CRITERIA_BUCKET,
+            Key='judge-criteria.json'
         )
         questions_data = json.loads(response['Body'].read().decode('utf-8'))
         logger.info("Successfully loaded judge questions")
