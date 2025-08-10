@@ -4,7 +4,7 @@ A comprehensive platform for training, evaluating, and ranking Large Language Mo
 
 ## Architecture Overview
 
-![LLM League Architecture](./generated-diagrams/LLMLeagueArchitecture_Updated.png.png)
+![LLM League Architecture](./generated-diagrams/LLMLeagueArchitecture_Updated.png)
 
 The application uses a multi-account architecture to ensure security, isolation, and fair evaluation:
 
