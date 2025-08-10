@@ -4,7 +4,7 @@ The **Leaderboard Account** component of the LLM League platform, responsible fo
 
 ## Architecture Overview
 
-![LLM League Architecture](./generated-diagrams/LLMLeagueArchitecture_Updated.png)
+![LLM League Architecture](./image/LLMLeagueArchitecture.png)
 
 The leaderboard account operates as part of a LLM League architecture that ensures fair and secure evaluation of participant models. This account focuses on:
 
@@ -44,6 +44,23 @@ The leaderboard account operates as part of a LLM League architecture that ensur
 - Detailed performance metrics and score breakdowns
 - Historical performance tracking
 - Interactive charts and statistics
+
+## Application Screenshots
+
+### 🏆 Leaderboard View
+The main leaderboard interface showing current rankings and participant performance:
+
+![Leaderboard Interface](./image/leaderboard.png)
+
+### 🥇 Podium Rankings
+Top performers displayed in an engaging podium format:
+
+![Podium View](./image/podium.png)
+
+### 📈 Performance Analysis
+Detailed analytics and performance metrics for comprehensive evaluation insights:
+
+![Analysis Dashboard](./image/analysis.png)
 
 ## Quick Start
 
@@ -96,16 +113,6 @@ npm run build
 aws s3 sync dist/ s3://your-frontend-bucket/
 aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
 ```
-
-## Configuration
-
-### Judge Criteria vs Dataset
-
-**Important Distinction:**
-- **Your Dataset** (JSONL): Contains the actual prompts, reference answers, and model responses to be evaluated
-- **Judge Criteria** (JSON): Contains the evaluation rubric that tells the Bedrock LLM judge HOW to score responses
-
-The judge criteria file provides meta-instructions for the AI judge, defining scoring categories, weights, and guidelines.
 
 ### Judge Criteria Format
 ```json
@@ -189,19 +196,6 @@ curl -X POST "${JUDGE_API_URL}/evaluate" \
     "participantId": "participant-004",
     "presignedUrl": "https://your-s3-bucket.s3.amazonaws.com/mock-bedrock-dataset004.jsonl?[presigned-url-params]"
   }'
-```
-
-**Request Body:**
-```json
-{
-  "participantId": "team-alpha",
-  "presignedUrl": "https://presigned-s3-url-to-model-results.jsonl",
-  "modelName": "CustomLLM-v1",
-  "metadata": {
-    "model_type": "fine-tuned-llama2",
-    "training_data_size": "10k_samples"
-  }
-}
 ```
 
 **Required JSONL Format for Bedrock LLM Judge:**
