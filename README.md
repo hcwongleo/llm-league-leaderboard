@@ -214,22 +214,6 @@ The presigned URL must point to a JSONL file where each line contains a complete
 }
 ```
 
-**JSONL Schema:**
-- `prompt` (string): The original question or task given to the model
-- `referenceResponse` (string): The ideal/reference answer for comparison
-- `category` (string): Type of task (e.g., "summarization", "information_extraction", "explanation", "benefits", "comparison", "use_case")
-- `modelResponses` (array): Array of model responses to evaluate
-  - `response` (string): The actual response from the participant's model
-  - `modelIdentifier` (string): Identifier for the participant/model (should match participantId)
-
-**Example Categories:**
-- `summarization`: Text summarization tasks
-- `information_extraction`: Extracting specific information from text
-- `explanation`: Explaining concepts or processes
-- `benefits`: Listing advantages or benefits
-- `comparison`: Comparing different options or technologies
-- `use_case`: Describing practical applications or scenarios
-
 **Testing:**
 Use the provided test script to validate your endpoint:
 ```bash
