@@ -6,12 +6,11 @@ The **Leaderboard Account** component of the LLM League platform, responsible fo
 
 ![LLM League Architecture](./generated-diagrams/LLMLeagueArchitecture_Updated.png)
 
-The leaderboard account operates as part of a multi-account architecture that ensures fair and secure evaluation of participant models. This account focuses on:
+The leaderboard account operates as part of a LLM League architecture that ensures fair and secure evaluation of participant models. This account focuses on:
 
 - **Model Evaluation**: Using Amazon Bedrock as an impartial AI judge
 - **Ranking Management**: Processing and storing leaderboard rankings via Lambda functions
 - **Public Display**: Serving leaderboard results through a web interface
-- **Cross-Account Security**: Secure integration with participant accounts
 
 ## Leaderboard Account Components
 
@@ -32,14 +31,6 @@ The leaderboard account operates as part of a multi-account architecture that en
 ### Data Storage
 - **Leaderboard Results (S3)**: Current rankings, historical data, and detailed evaluation results
 
-## Recent Architecture Updates
-
-### Lambda-Based Data Management (August 2025)
-- **Replaced DynamoDB with Leaderboard API Lambda**: Simplified architecture by centralizing all leaderboard operations in a dedicated Lambda function
-- **Enhanced Scalability**: Serverless approach provides better cost optimization and automatic scaling
-- **Streamlined Data Flow**: Direct integration between Judge Orchestrator and Leaderboard API Lambda for faster updates
-- **Improved API Design**: Single Lambda function handles all leaderboard operations (GET, POST, rankings, statistics)
-
 ## Features
 
 ### 🏆 **Automated Model Evaluation**
@@ -53,18 +44,6 @@ The leaderboard account operates as part of a multi-account architecture that en
 - Detailed performance metrics and score breakdowns
 - Historical performance tracking
 - Interactive charts and statistics
-
-### 🔒 **Secure Cross-Account Integration**
-- Presigned URL access for participant model results
-- IAM-based cross-account permissions with least privilege
-- Audit logging for all evaluation activities
-- Secure API endpoints with authentication
-
-### ⚡ **Serverless Architecture**
-- Cost-effective Lambda-based processing
-- Automatic scaling based on demand
-- High availability with multi-AZ deployment
-- CloudWatch monitoring and alerting
 
 ## Quick Start
 
