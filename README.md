@@ -26,7 +26,7 @@ The leaderboard account operates as part of a LLM League architecture that ensur
 ### LLM Judge & Ranking System
 - **Judge Orchestrator (Lambda)**: Coordinates the evaluation workflow and manages judge interactions
 - **Amazon Bedrock**: AI-powered impartial judge for model evaluation using state-of-the-art LLMs
-- **Judge Questions (S3)**: Configurable evaluation criteria, prompts, and scoring rubrics
+- **Judge Criteria (S3)**: Configurable evaluation criteria, scoring guidelines, and rubrics for consistent judging
 
 ### Data Storage
 - **Leaderboard Results (S3)**: Current rankings, historical data, and detailed evaluation results
@@ -79,9 +79,9 @@ npm run deploy
 ./deploy.sh
 ```
 
-### 3. Upload Judge Questions
+### 3. Upload Judge Criteria
 ```bash
-# Judge questions are automatically deployed by CDK
+# Judge criteria are automatically deployed by CDK
 # But you can also upload manually if needed:
 aws s3 cp judge-questions/judge-questions.json s3://llm-judge-questions-${AWS_ACCOUNT_ID}-${AWS_REGION}/
 ```
@@ -99,7 +99,15 @@ aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --path
 
 ## Configuration
 
-### Judge Questions Format
+### Judge Criteria vs Dataset
+
+**Important Distinction:**
+- **Your Dataset** (JSONL): Contains the actual prompts, reference answers, and model responses to be evaluated
+- **Judge Criteria** (JSON): Contains the evaluation rubric that tells the Bedrock LLM judge HOW to score responses
+
+The judge criteria file provides meta-instructions for the AI judge, defining scoring categories, weights, and guidelines.
+
+### Judge Criteria Format
 ```json
 {
   "evaluation_criteria": [
