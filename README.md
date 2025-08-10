@@ -159,28 +159,6 @@ aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --path
 }
 ```
 
-### Configuration
-
-All configuration is handled directly in the CDK stack code (`lib/leaderboard-stack.ts`). Key settings include:
-
-**Bedrock Configuration:**
-```typescript
-BEDROCK_MODEL_ID: 'anthropic.claude-3-sonnet-20240229-v1:0'
-```
-
-**S3 Bucket Names (auto-generated):**
-- Judge Questions: `llm-judge-questions-{account}-{region}`
-- Participant Results: `llm-participant-results-{account}-{region}`  
-- Evaluation Output: `llm-evaluation-output-{account}-{region}`
-
-**Frontend Environment Variables (for local development only):**
-```bash
-# Create frontend/.env.local for local development
-VITE_API_BASE_URL=https://your-api-gateway-url.amazonaws.com/prod
-```
-
-To change the Bedrock model or other settings, edit the CDK stack code directly.
-
 ## API Reference
 
 ### Leaderboard API Endpoints
@@ -215,16 +193,67 @@ Response:
 
 #### POST /evaluate
 Submit model results for evaluation (called by participant accounts)
+
+**Example from test.sh:**
 ```bash
-curl -X POST https://your-api-gateway-url/evaluate \
+curl -X POST "${JUDGE_API_URL}/evaluate" \
   -H "Content-Type: application/json" \
   -d '{
-    "participant_id": "team-alpha",
-    "model_name": "CustomLLM-v1",
-    "results_url": "https://presigned-s3-url...",
-    "metadata": {
-      "model_type": "fine-tuned-llama2",
-      "training_data_size": "10k_samples"
-    }
+    "participantId": "participant-004",
+    "presignedUrl": "https://your-s3-bucket.s3.amazonaws.com/mock-bedrock-dataset004.jsonl?[presigned-url-params]"
   }'
+```
+
+**Request Body:**
+```json
+{
+  "participantId": "team-alpha",
+  "presignedUrl": "https://presigned-s3-url-to-model-results.jsonl",
+  "modelName": "CustomLLM-v1",
+  "metadata": {
+    "model_type": "fine-tuned-llama2",
+    "training_data_size": "10k_samples"
+  }
+}
+```
+
+**Required JSONL Format for Bedrock LLM Judge:**
+
+The presigned URL must point to a JSONL file where each line contains a complete evaluation record:
+
+```json
+{
+  "prompt": "Write a 15 words summary of this text:\n\nAWS Fargate is a technology that you can use to run containers without having to manage servers or clusters...",
+  "referenceResponse": "Fargate runs containers serverlessly, removing server management, VM provisioning, and cluster scaling complexities.",
+  "category": "summarization",
+  "modelResponses": [
+    {
+      "response": "AWS Fargate is a container service that helps with running applications in the cloud using Docker containers.",
+      "modelIdentifier": "participant-004"
+    }
+  ]
+}
+```
+
+**JSONL Schema:**
+- `prompt` (string): The original question or task given to the model
+- `referenceResponse` (string): The ideal/reference answer for comparison
+- `category` (string): Type of task (e.g., "summarization", "information_extraction", "explanation", "benefits", "comparison", "use_case")
+- `modelResponses` (array): Array of model responses to evaluate
+  - `response` (string): The actual response from the participant's model
+  - `modelIdentifier` (string): Identifier for the participant/model (should match participantId)
+
+**Example Categories:**
+- `summarization`: Text summarization tasks
+- `information_extraction`: Extracting specific information from text
+- `explanation`: Explaining concepts or processes
+- `benefits`: Listing advantages or benefits
+- `comparison`: Comparing different options or technologies
+- `use_case`: Describing practical applications or scenarios
+
+**Testing:**
+Use the provided test script to validate your endpoint:
+```bash
+cd test/
+./test.sh https://your-judge-api-url.amazonaws.com/prod
 ```
