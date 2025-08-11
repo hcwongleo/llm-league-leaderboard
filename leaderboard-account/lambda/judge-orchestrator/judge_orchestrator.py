@@ -16,7 +16,6 @@ s3_client = boto3.client('s3')
 bedrock_client = boto3.client('bedrock')
 
 # Environment variables
-JUDGE_CRITERIA_BUCKET = os.environ['JUDGE_CRITERIA_BUCKET']
 BEDROCK_MODEL_ID = os.environ['BEDROCK_MODEL_ID']
 PARTICIPANT_RESULTS_BUCKET = os.environ['PARTICIPANT_RESULTS_BUCKET']
 BEDROCK_EVALUATION_ROLE_ARN = os.environ['BEDROCK_EVALUATION_ROLE_ARN']
@@ -58,11 +57,6 @@ def handler(event, context):
                 })
             }
         
-        # Load judge criteria
-        logger.info("Loading judge criteria...")
-        judge_criteria = load_judge_criteria()
-        logger.info("Judge criteria loaded successfully")
-        
         # TODO: improve it to use cross-account S3 CopyObject
         # Copy participant results to our S3 bucket
         logger.info("Retrieving and copying participant results...")
@@ -73,7 +67,6 @@ def handler(event, context):
         logger.info("Starting Bedrock evaluation...")
         evaluation_scores = evaluate_with_bedrock_judge(
             participant_results_s3_uri, 
-            judge_criteria,
             participant_id
         )
         logger.info("Bedrock evaluation completed")
@@ -112,20 +105,6 @@ def handler(event, context):
                 'message': str(e)
             })
         }
-
-def load_judge_criteria() -> Dict[str, Any]:
-    """Load judge criteria and evaluation guidelines from S3"""
-    try:
-        response = s3_client.get_object(
-            Bucket=JUDGE_CRITERIA_BUCKET,
-            Key='judge-criteria.json'
-        )
-        questions_data = json.loads(response['Body'].read().decode('utf-8'))
-        logger.info("Successfully loaded judge criteria")
-        return questions_data
-    except Exception as e:
-        logger.error(f"Error loading judge criteria: {str(e)}")
-        raise
 
 def retrieve_participant_results(presigned_url: str, participant_id: str) -> str:
     """Copy participant results from presigned URL to our S3 bucket and return S3 URI"""
@@ -186,7 +165,6 @@ def retrieve_participant_results(presigned_url: str, participant_id: str) -> str
 
 def evaluate_with_bedrock_judge(
     participant_results_s3_uri: str, 
-    judge_criteria: Dict[str, Any],
     participant_id: str
 ) -> Dict[str, Any]:
     """Evaluate participant results using Bedrock LLM Judge"""

@@ -26,7 +26,6 @@ The leaderboard account operates as part of a LLM League architecture that ensur
 ### LLM Judge & Ranking System
 - **Judge Orchestrator (Lambda)**: Coordinates the evaluation workflow and manages judge interactions
 - **Amazon Bedrock**: AI-powered impartial judge for model evaluation using state-of-the-art LLMs
-- **Judge Criteria (S3)**: Configurable evaluation criteria, scoring guidelines, and rubrics for consistent judging
 
 ### Data Storage
 - **Leaderboard Results (S3)**: Current rankings, historical data, and detailed evaluation results
@@ -131,14 +130,7 @@ npm run deploy
 ./deploy.sh
 ```
 
-### 3. Upload Judge Criteria
-```bash
-# Judge criteria are automatically deployed by CDK
-# But you can also upload manually if needed:
-aws s3 cp judge-criteria/judge-criteria.json s3://llm-judge-criteria-${AWS_ACCOUNT_ID}-${AWS_REGION}/
-```
-
-### 4. Deploy Frontend
+### 3. Deploy Frontend
 ```bash
 cd frontend
 npm install
@@ -147,45 +139,6 @@ npm run build
 # Deploy to S3 and invalidate CloudFront
 aws s3 sync dist/ s3://your-frontend-bucket/
 aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
-```
-
-### Judge Criteria Format
-```json
-{
-  "evaluation_criteria": [
-    {
-      "category": "accuracy",
-      "weight": 0.4,
-      "description": "Factual correctness and precision",
-      "questions": [
-        "How accurate is the model's response?",
-        "Does the response contain factual errors?"
-      ]
-    },
-    {
-      "category": "coherence",
-      "weight": 0.3,
-      "description": "Logical structure and flow",
-      "questions": [
-        "Is the response logically structured?",
-        "Does the response flow naturally?"
-      ]
-    },
-    {
-      "category": "relevance",
-      "weight": 0.3,
-      "description": "Relevance to the prompt",
-      "questions": [
-        "How relevant is the response to the prompt?",
-        "Does the response address all aspects of the question?"
-      ]
-    }
-  ],
-  "scoring": {
-    "scale": "1-10",
-    "description": "1 = Poor, 5 = Average, 10 = Excellent"
-  }
-}
 ```
 
 ## API Reference
