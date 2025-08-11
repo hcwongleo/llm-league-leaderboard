@@ -36,8 +36,18 @@ The leaderboard account operates as part of a LLM League architecture that ensur
 ### 🏆 **Automated Model Evaluation**
 - Fair evaluation using Amazon Bedrock as an impartial judge
 - Configurable evaluation criteria and scoring rubrics
-- Support for multiple evaluation dimensions (accuracy, coherence, relevance)
+- Support for multiple evaluation dimensions:
+  - **Builtin.Correctness**: Factual accuracy and precision of responses
+  - **Builtin.Completeness**: Thoroughness and coverage of the topic
+  - **Builtin.ProfessionalStyleAndTone**: Communication quality and appropriateness
 - Automated ranking calculation and updates
+
+### 📊 **Scoring System**
+- **Score Range**: 0.0 to 1.0 (normalized scores)
+- **Total Score**: Average of all metric scores
+- **Individual Metrics**: Each dimension scored independently
+- **Ranking**: Based on total score with ties broken by timestamp
+- **Evaluation Count**: Number of test cases evaluated per participant
 
 ### 📊 **Real-Time Leaderboard**
 - Live rankings with automatic updates
@@ -168,20 +178,36 @@ Response:
 {
   "rankings": [
     {
-      "rank": 1,
-      "model_name": "CustomLLM-v1",
-      "participant": "team-alpha",
-      "overall_score": 8.7,
-      "scores": {
-        "accuracy": 9.1,
-        "coherence": 8.5,
-        "relevance": 8.5
+      "participantId": "participant-003",
+      "modelName": "participant-003",
+      "totalScore": 1.0,
+      "metricScores": {
+        "Builtin.Correctness": 1.0,
+        "Builtin.Completeness": 1.0,
+        "Builtin.ProfessionalStyleAndTone": 1.0
       },
-      "evaluation_date": "2025-08-10T16:00:00Z"
+      "evaluationCount": 6,
+      "timestamp": 1754832901,
+      "status": "COMPLETED",
+      "rank": 1
+    },
+    {
+      "participantId": "participant-001",
+      "modelName": "participant-001",
+      "totalScore": 0.236,
+      "metricScores": {
+        "Builtin.Correctness": 0.0,
+        "Builtin.Completeness": 0.125,
+        "Builtin.ProfessionalStyleAndTone": 0.583
+      },
+      "evaluationCount": 6,
+      "timestamp": 1754811115,
+      "status": "COMPLETED",
+      "rank": 2
     }
   ],
-  "total_participants": 15,
-  "last_updated": "2025-08-10T16:30:00Z"
+  "timestamp": 1754873324,
+  "count": 4
 }
 ```
 
