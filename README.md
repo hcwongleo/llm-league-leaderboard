@@ -46,8 +46,33 @@ The leaderboard account operates as part of a LLM League architecture that ensur
 - **Score Range**: 0.0 to 1.0 (normalized scores)
 - **Total Score**: Average of all metric scores
 - **Individual Metrics**: Each dimension scored independently
-- **Ranking**: Based on total score with ties broken by timestamp
+- **Ranking Logic**: 
+  - Primary: Based on total score (highest first)
+  - Tiebreaker: Earlier timestamp wins (first submission advantage)
+  - Precision: Scores calculated to high precision to minimize ties
 - **Evaluation Count**: Number of test cases evaluated per participant
+
+#### Tiebreaker Handling
+When participants have identical total scores, the system uses timestamp-based tiebreaking:
+- **Earlier Submission Wins**: Participant who submitted first gets the higher rank
+- **Fairness**: Encourages early participation and prevents gaming
+- **Consistency**: Deterministic ranking that doesn't change unless scores change
+
+Example tiebreaker scenario:
+```json
+{
+  "participant-001": {
+    "totalScore": 0.236,
+    "timestamp": 1754811115,  // Earlier submission
+    "rank": 2                 // Gets higher rank
+  },
+  "participant-004": {
+    "totalScore": 0.236,
+    "timestamp": 1754839956,  // Later submission  
+    "rank": 3                 // Gets lower rank
+  }
+}
+```
 
 ### 📊 **Real-Time Leaderboard**
 - Live rankings with automatic updates
